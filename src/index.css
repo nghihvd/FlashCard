@@ -1,0 +1,60 @@
+@import "tailwindcss";
+
+:root {
+  --font-inter: 'Inter', system-ui, -apple-system, sans-serif;
+  font-family: var(--font-inter);
+}
+
+@theme {
+  --color-primary-light: #aa3bff;
+  --color-primary: #8a2be2;
+  --color-primary-dark: #6a1bb3;
+}
+
+@layer base {
+  body {
+    @apply bg-slate-50 text-slate-900 dark:bg-slate-950 dark:text-slate-100 transition-colors duration-300;
+  }
+}
+
+@utility glass {
+  @apply bg-white/70 dark:bg-slate-900/70 backdrop-blur-md border border-white/20 dark:border-slate-700/30 shadow-xl;
+}
+
+@layer components {
+  .glass-card {
+    @apply glass rounded-2xl p-6 transition-all hover:shadow-2xl hover:border-white/40 dark:hover:border-slate-600/50;
+  }
+
+  /* 3D Flip Card Styles */
+  .flip-card {
+    perspective: 1000px;
+    background-color: transparent;
+  }
+
+  .flip-card-inner {
+    position: relative;
+    width: 100%;
+    height: 100%;
+    text-align: center;
+    transition: transform 0.6s;
+    transform-style: preserve-3d;
+  }
+
+  .flipped .flip-card-inner {
+    transform: rotateY(180deg);
+  }
+
+  .flip-card-front, .flip-card-back {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    backface-visibility: hidden;
+    -webkit-backface-visibility: hidden;
+    @apply glass rounded-2xl flex flex-col items-center justify-center p-8;
+  }
+
+  .flip-card-back {
+    transform: rotateY(180deg);
+  }
+}
