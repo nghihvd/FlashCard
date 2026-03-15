@@ -38,12 +38,19 @@ const CardManager = ({ cards, onDelete, onEdit }) => {
           <div key={card.id} className="glass-card group flex flex-col justify-between hover:scale-[1.02] transition-all">
             <div>
               <div className="flex justify-between items-start mb-4">
-                <span className={`px-3 py-1 rounded-full text-[10px] font-bold uppercase tracking-wider ${
-                  card.level === 'mastered' ? 'bg-green-100 text-green-600' :
-                  card.level === 'familiar' ? 'bg-blue-100 text-blue-600' : 'bg-slate-100 text-slate-600'
-                }`}>
-                  {card.level}
-                </span>
+                <div className="flex items-center gap-2">
+                  <span className={`px-3 py-1 rounded-full text-[10px] font-bold uppercase tracking-wider ${
+                    card.level === 'mastered' ? 'bg-green-100 text-green-600' :
+                    card.level === 'familiar' ? 'bg-blue-100 text-blue-600' : 'bg-slate-100 text-slate-600'
+                  }`}>
+                    {card.level}
+                  </span>
+                  {card.pos && (
+                    <span className="text-[10px] font-bold text-slate-400 italic">
+                      ({card.pos})
+                    </span>
+                  )}
+                </div>
                 <div className="flex gap-1 opacity-0 group-hover:opacity-100 transition-opacity">
                   <button 
                     onClick={() => speak(card.word)}

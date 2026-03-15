@@ -6,6 +6,8 @@ const AddCardModal = ({ isOpen, onClose, onAdd, initialData }) => {
   const [formData, setFormData] = useState({
     word: '',
     definition: '',
+    pos: '',
+    related: '',
   });
 
   useEffect(() => {
@@ -13,6 +15,8 @@ const AddCardModal = ({ isOpen, onClose, onAdd, initialData }) => {
       setFormData({
         word: initialData.word || '',
         definition: initialData.definition || '',
+        pos: initialData.pos || '',
+        related: initialData.related || '',
       });
     } else {
       setFormData({ word: '', definition: '' });
@@ -74,6 +78,33 @@ const AddCardModal = ({ isOpen, onClose, onAdd, initialData }) => {
                     onChange={(e) => setFormData({...formData, word: e.target.value})}
                     placeholder="Ví dụ: Serendipity"
                     className="w-full pl-12 pr-4 py-4 glass rounded-2xl border-2 border-transparent focus:border-primary outline-none transition-all font-medium"
+                  />
+                </div>
+              </div>
+
+              <div className="grid grid-cols-2 gap-4">
+                <div>
+                  <label className="block text-sm font-semibold text-slate-600 dark:text-slate-400 mb-2 px-1">
+                    Từ loại (POS)
+                  </label>
+                  <input
+                    type="text"
+                    value={formData.pos}
+                    onChange={(e) => setFormData({...formData, pos: e.target.value})}
+                    placeholder="n, v, adj..."
+                    className="w-full px-4 py-4 glass rounded-2xl border-2 border-transparent focus:border-primary outline-none transition-all font-medium"
+                  />
+                </div>
+                <div>
+                  <label className="block text-sm font-semibold text-slate-600 dark:text-slate-400 mb-2 px-1">
+                    Từ liên quan
+                  </label>
+                  <input
+                    type="text"
+                    value={formData.related}
+                    onChange={(e) => setFormData({...formData, related: e.target.value})}
+                    placeholder="synonyms..."
+                    className="w-full px-4 py-4 glass rounded-2xl border-2 border-transparent focus:border-primary outline-none transition-all font-medium"
                   />
                 </div>
               </div>

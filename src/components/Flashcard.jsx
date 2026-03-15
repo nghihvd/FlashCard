@@ -40,16 +40,33 @@ const Flashcard = ({ card, onAssessment }) => {
 
         {/* Back Side */}
         <div 
-          className="absolute inset-0 w-full h-full glass-card flex flex-col items-center justify-center backface-hidden"
+          className="absolute inset-0 w-full h-full glass-card flex flex-col items-center justify-center backface-hidden overflow-hidden"
           style={{ 
             backfaceVisibility: "hidden", 
             transform: "rotateY(180deg)" 
           }}
         >
-          <span className="text-sm font-medium text-primary mb-4 tracking-wider uppercase">Định nghĩa</span>
-          <h2 className="text-2xl font-semibold text-slate-700 dark:text-slate-200 text-center px-4">
+          <div className="flex items-center gap-2 mb-2">
+            <span className="text-[10px] font-bold text-primary px-2 py-0.5 bg-primary/10 rounded-full uppercase tracking-widest">
+              Định nghĩa
+            </span>
+            {card.pos && (
+              <span className="text-[10px] font-bold text-slate-400 italic">
+                ({card.pos})
+              </span>
+            )}
+          </div>
+          
+          <h2 className="text-2xl font-semibold text-slate-700 dark:text-slate-200 text-center px-6 leading-tight mb-4">
             {card.definition}
           </h2>
+
+          {card.related && (
+            <div className="px-6 text-center">
+              <span className="text-[10px] font-medium text-slate-400 block mb-1 uppercase tracking-tighter">Từ liên quan</span>
+              <p className="text-sm text-slate-500 font-medium italic">{card.related}</p>
+            </div>
+          )}
           
           {onAssessment && (
             <div className="mt-12 flex gap-3" onClick={(e) => e.stopPropagation()}>

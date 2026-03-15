@@ -25,6 +25,8 @@ function App() {
         interval: parseInt(card.interval) || 0,
         last_reviewed: card.last_reviewed || '',
         next_review: card.next_review || today,
+        pos: card.pos || '',
+        related: card.related || '',
       }));
       setCards(normalizedData);
     } else {
