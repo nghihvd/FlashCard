@@ -4,29 +4,12 @@ import StudySession from './components/StudySession';
 import AddCardModal from './components/AddCardModal';
 import { fetchCards, addCard, updateCard } from './api/sheets';
 
-// Mock data in case API is not configured yet
-const MOCK_CARDS = [
-  { id: '1', word: 'Persistence', definition: 'Sự kiên trì, bền bỉ', level: 'New' },
-  { id: '2', word: 'Eloquent', definition: 'Hùng hồn, có khả năng diễn đạt tốt', level: 'Familiar' },
-  { id: '3', word: 'Meticulous', definition: 'Tỉ mỉ, kỹ càng', level: 'New' },
-  { id: '4', word: 'Resilient', definition: 'Có khả năng phục hồi nhanh, kiên cường', level: 'Mastered' },
-];
-
-function App() {
-  const [cards, setCards] = useState([]);
-  const [isModalOpen, setIsModalOpen] = useState(false);
-  const [darkMode, setDarkMode] = useState(false);
-  const [loading, setLoading] = useState(true);
-
   useEffect(() => {
     const loadCards = async () => {
       setLoading(true);
       const data = await fetchCards();
       if (data && data.length > 0) {
         setCards(data);
-      } else {
-        // Use mock data if API fails or is not configured
-        setCards(MOCK_CARDS);
       }
       setLoading(false);
     };
