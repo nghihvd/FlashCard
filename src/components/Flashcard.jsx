@@ -1,8 +1,15 @@
 import React, { useState } from 'react';
 import { motion } from 'framer-motion';
+import { Volume2 } from 'lucide-react';
+import { speak } from '../utils/speech';
 
 const Flashcard = ({ card, onAssessment }) => {
   const [isFlipped, setIsFlipped] = useState(false);
+
+  const handleSpeak = (e) => {
+    e.stopPropagation();
+    speak(card.word);
+  };
 
   return (
     <div className="w-full max-w-md h-96 flip-card cursor-pointer mx-auto" onClick={() => setIsFlipped(!isFlipped)}>
@@ -18,6 +25,14 @@ const Flashcard = ({ card, onAssessment }) => {
           className="absolute inset-0 w-full h-full glass-card flex flex-col items-center justify-center backface-hidden"
           style={{ backfaceVisibility: "hidden" }}
         >
+          <button 
+            onClick={handleSpeak}
+            className="absolute top-6 right-6 p-3 rounded-2xl bg-primary/5 text-primary hover:bg-primary/20 transition-all hover:scale-110 active:scale-95"
+            title="Nghe phát âm"
+          >
+            <Volume2 className="w-6 h-6" />
+          </button>
+
           <span className="text-sm font-medium text-primary mb-4 tracking-wider uppercase">Vựng tập</span>
           <h2 className="text-4xl font-bold tracking-tight text-slate-800 dark:text-white">{card.word}</h2>
           <p className="mt-8 text-slate-400 text-sm italic">Click to flip</p>
@@ -39,19 +54,19 @@ const Flashcard = ({ card, onAssessment }) => {
           {onAssessment && (
             <div className="mt-12 flex gap-3" onClick={(e) => e.stopPropagation()}>
               <button 
-                onClick={() => onAssessment('New')}
+                onClick={() => onAssessment('new')}
                 className="px-4 py-2 rounded-full border border-red-200 bg-red-50 text-red-600 text-xs font-semibold hover:bg-red-100 transition-colors"
               >
                 Chưa nhớ
               </button>
               <button 
-                onClick={() => onAssessment('Familiar')}
+                onClick={() => onAssessment('familiar')}
                 className="px-4 py-2 rounded-full border border-blue-200 bg-blue-50 text-blue-600 text-xs font-semibold hover:bg-blue-100 transition-colors"
               >
                 Đã nhớ sơ
               </button>
               <button 
-                onClick={() => onAssessment('Mastered')}
+                onClick={() => onAssessment('mastered')}
                 className="px-4 py-2 rounded-full border border-green-200 bg-green-50 text-green-600 text-xs font-semibold hover:bg-green-100 transition-colors"
               >
                 Thuộc lòng

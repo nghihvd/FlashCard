@@ -55,11 +55,23 @@ const StudySession = ({ cards, onAssessment }) => {
   };
 
   const handleCheckQuiz = () => {
-    const target = learningStep === 'practice-1' ? currentCard.definition : currentCard.word;
-    if (quizInput.toLowerCase().trim() === target.toLowerCase().trim()) {
-      setQuizResult('correct');
+    const userInput = quizInput.toLowerCase().trim();
+    const target = (learningStep === 'practice-1' ? currentCard.definition : currentCard.word).toLowerCase().trim();
+    
+    // Nếu là đoán định nghĩa (practice-1), chỉ cần chứa từ khóa là được (contain)
+    // Nếu là đoán từ vựng (practice-2), vẫn yêu cầu chính xác để đảm bảo nhớ đúng mặt chữ
+    if (learningStep === 'practice-1') {
+      if (target.includes(userInput) && userInput.length > 1) {
+        setQuizResult('correct');
+      } else {
+        setQuizResult('wrong');
+      }
     } else {
-      setQuizResult('wrong');
+      if (userInput === target) {
+        setQuizResult('correct');
+      } else {
+        setQuizResult('wrong');
+      }
     }
   };
 

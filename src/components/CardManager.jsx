@@ -1,5 +1,6 @@
 import React from 'react';
-import { Trash2, Edit2, Search, Book } from 'lucide-react';
+import { Trash2, Edit2, Search, Book, Volume2 } from 'lucide-react';
+import { speak } from '../utils/speech';
 
 const CardManager = ({ cards, onDelete, onEdit }) => {
   const [searchTerm, setSearchTerm] = React.useState('');
@@ -45,14 +46,20 @@ const CardManager = ({ cards, onDelete, onEdit }) => {
                 </span>
                 <div className="flex gap-1 opacity-0 group-hover:opacity-100 transition-opacity">
                   <button 
+                    onClick={() => speak(card.word)}
+                    className="p-2 rounded-lg hover:bg-white text-slate-400 hover:text-primary transition-colors"
+                  >
+                    <Volume2 className="w-4 h-4" />
+                  </button>
+                  <button 
                     onClick={() => onEdit(card)}
-                    className="p-2 rounded-lg hover:bg-white text-slate-500 hover:text-primary transition-colors"
+                    className="p-2 rounded-lg hover:bg-white text-slate-400 hover:text-primary transition-colors"
                   >
                     <Edit2 className="w-4 h-4" />
                   </button>
                   <button 
                     onClick={() => onDelete(card.id)}
-                    className="p-2 rounded-lg hover:bg-white text-slate-500 hover:text-red-500 transition-colors"
+                    className="p-2 rounded-lg hover:bg-white text-slate-400 hover:text-red-500 transition-colors"
                   >
                     <Trash2 className="w-4 h-4" />
                   </button>
