@@ -4,18 +4,42 @@ import StudySession from './components/StudySession';
 import AddCardModal from './components/AddCardModal';
 import { fetchCards, addCard, updateCard } from './api/sheets';
 
+function App() {
+  const [cards, setCards] = useState([]);
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [darkMode, setDarkMode] = useState(false);
+  const [loading, setLoading] = useState(true);
+
+  const today = new Date().toISOString().split('T')[0];
+
   useEffect(() => {
     const loadCards = async () => {
       setLoading(true);
       const data = await fetchCards();
       if (data && data.length > 0) {
-        setCards(data);
+        // Normalize fields that might be missing from SheetDB
+        const normalizedData = data.map(card => ({
+          ...card,
+          level: card.level || 'new',
+          interval: parseInt(card.interval) || 0,
+          last_reviewed: card.last_reviewed || '',
+          next_review: card.next_review || today,
+        }));
+        setCards(normalizedData);
       }
       setLoading(false);
     };
 
     loadCards();
   }, []);
+
+  // Daily Queue Logic
+  const dueCards = cards
+    .filter(card => !card.next_review || card.next_review <= today)
+    .sort((a, b) => {
+      const priority = { new: 1, familiar: 2, mastered: 3 };
+      return priority[a.level] - priority[b.level];
+    });
 
   useEffect(() => {
     if (darkMode) {
@@ -26,13 +50,53 @@ import { fetchCards, addCard, updateCard } from './api/sheets';
   }, [darkMode]);
 
   const handleAddCard = async (newCard) => {
-    const cardWithId = { ...newCard, id: Date.now().toString(), level: 'New' };
-    setCards([...cards, cardWithId]);
-    await addCard(cardWithId);
+    const cardWithData = { 
+      ...newCard, 
+      id: Date.now().toString(), 
+      level: 'new',
+      interval: 0,
+      last_reviewed: '',
+      next_review: today
+    };
+    setCards([...cards, cardWithData]);
+    await addCard(cardWithData);
   };
 
-  const handleUpdateCard = async (id, updates) => {
-    setCards(cards.map(card => card.id === id ? { ...card, ...updates } : card));
+  const handleAssessment = async (id, status) => {
+    const card = cards.find(c => c.id === id);
+    if (!card) return;
+
+    let newLevel = card.level;
+    let newInterval = card.interval;
+    const now = new Date();
+
+    if (status === 'pass') {
+      if (card.level === 'new') {
+        newLevel = 'familiar';
+        newInterval = 3;
+      } else if (card.level === 'familiar') {
+        newLevel = 'mastered';
+        newInterval = 30;
+      } else if (card.level === 'mastered') {
+        newLevel = 'mastered';
+        newInterval = Math.min(card.interval * 2, 90);
+      }
+    } else {
+      newLevel = 'new';
+      newInterval = 1;
+    }
+
+    const nextReviewDate = new Date(now);
+    nextReviewDate.setDate(now.getDate() + newInterval);
+    
+    const updates = {
+      level: newLevel,
+      interval: newInterval,
+      last_reviewed: now.toISOString().split('T')[0],
+      next_review: nextReviewDate.toISOString().split('T')[0]
+    };
+
+    setCards(cards.map(c => c.id === id ? { ...c, ...updates } : c));
     await updateCard(id, updates);
   };
 
@@ -44,15 +108,15 @@ import { fetchCards, addCard, updateCard } from './api/sheets';
         toggleDarkMode={() => setDarkMode(!darkMode)}
       />
 
-      <main className="container mx-auto px-4">
+      <main className="container mx-auto px-4 max-w-5xl">
         {loading ? (
           <div className="flex items-center justify-center h-64">
             <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary"></div>
           </div>
         ) : (
           <StudySession 
-            cards={cards} 
-            onUpdateCard={handleUpdateCard} 
+            cards={dueCards} 
+            onAssessment={handleAssessment} 
           />
         )}
       </main>
