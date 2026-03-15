@@ -1,12 +1,23 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { X, Plus, BookOpen, Layers } from 'lucide-react';
+import { X, Plus, BookOpen, Layers, Save } from 'lucide-react';
 
-const AddCardModal = ({ isOpen, onClose, onAdd }) => {
+const AddCardModal = ({ isOpen, onClose, onAdd, initialData }) => {
   const [formData, setFormData] = useState({
     word: '',
     definition: '',
   });
+
+  useEffect(() => {
+    if (initialData) {
+      setFormData({
+        word: initialData.word || '',
+        definition: initialData.definition || '',
+      });
+    } else {
+      setFormData({ word: '', definition: '' });
+    }
+  }, [initialData, isOpen]);
 
   const handleSubmit = (e) => {
     e.preventDefault();
@@ -42,9 +53,11 @@ const AddCardModal = ({ isOpen, onClose, onAdd }) => {
 
             <div className="flex items-center gap-3 mb-8">
               <div className="p-3 bg-primary/10 rounded-2xl">
-                <Plus className="w-6 h-6 text-primary" />
+                {initialData ? <Save className="w-6 h-6 text-primary" /> : <Plus className="w-6 h-6 text-primary" />}
               </div>
-              <h2 className="text-2xl font-bold text-slate-800 dark:text-white">Thêm từ mới</h2>
+              <h2 className="text-2xl font-bold text-slate-800 dark:text-white">
+                {initialData ? 'Cập nhật từ vựng' : 'Thêm từ mới'}
+              </h2>
             </div>
 
             <form onSubmit={handleSubmit} className="space-y-6">
@@ -86,7 +99,7 @@ const AddCardModal = ({ isOpen, onClose, onAdd }) => {
                 type="submit"
                 className="w-full py-4 bg-primary text-white rounded-2xl font-bold shadow-xl shadow-primary/30 hover:bg-primary-dark transition-all active:scale-[0.98] mt-4"
               >
-                Lưu vào Google Sheets
+                {initialData ? 'Cập nhật ngay' : 'Lưu vào Google Sheets'}
               </button>
             </form>
           </motion.div>

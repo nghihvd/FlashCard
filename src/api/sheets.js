@@ -50,3 +50,21 @@ export const addCard = async (cardData) => {
     return null;
   }
 };
+
+/**
+ * Delete a card from SheetDB
+ */
+export const deleteCard = async (id) => {
+  try {
+    const response = await fetch(`${API_URL}/id/${id}`, {
+      method: 'DELETE',
+      headers: {
+        'Content-Type': 'application/json'
+      }
+    });
+    return await response.json();
+  } catch (error) {
+    console.error('Error deleting card:', error);
+    return null;
+  }
+};
