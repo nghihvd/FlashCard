@@ -7,6 +7,7 @@ const SpecializedQuiz = ({ cards, allCards, mode, onFinish }) => {
   const [selectedOptions, setSelectedOptions] = useState([]);
   const [quizResult, setQuizResult] = useState(null);
   const [currentQuizData, setCurrentQuizData] = useState(null);
+  const [userInput, setUserInput] = useState('');
   const [isFinished, setIsFinished] = useState(false);
   const [score, setScore] = useState(0);
 
@@ -58,6 +59,7 @@ const SpecializedQuiz = ({ cards, allCards, mode, onFinish }) => {
     
     setQuizResult(null);
     setSelectedOptions([]);
+    setUserInput('');
   }, [currentIndex, isFinished]);
 
   const handleToggleOption = (option) => {
@@ -87,16 +89,33 @@ const SpecializedQuiz = ({ cards, allCards, mode, onFinish }) => {
         setQuizResult('wrong');
       }
     } else {
-      // Check for input (we'll use a hidden input or just focus for consistency, 
-      // but for simplicity in this specialized mode let's just use the currentCard's standard check)
-      // Actually let's make it a simple "Did you get it right?" button for Specialized mode
-      // or implement the input. Let's do the input for better practice.
+      const input = userInput.toLowerCase().trim();
+      const target = currentQuizData.answer.toLowerCase().trim();
+      
+      if (currentQuizData.isWordToDef) {
+        // Definition check (inclusive)
+        if (target.includes(input) && input.length > 1) {
+          setQuizResult('correct');
+          setScore(s => s + 1);
+        } else {
+          setQuizResult('wrong');
+        }
+      } else {
+        // Word check (exact)
+        if (input === target) {
+          setQuizResult('correct');
+          setScore(s => s + 1);
+        } else {
+          setQuizResult('wrong');
+        }
+      }
     }
   };
 
   const handleNext = () => {
     if (currentIndex < cards.length - 1) {
       setCurrentIndex(currentIndex + 1);
+      setUserInput('');
     } else {
       setIsFinished(true);
     }
@@ -173,11 +192,20 @@ const SpecializedQuiz = ({ cards, allCards, mode, onFinish }) => {
                 })}
               </div>
             ) : (
-               <div className="text-center p-6 bg-slate-50 dark:bg-slate-800/50 rounded-2xl mb-4 italic text-slate-500">
-                Chế độ nhập liệu đang được tối ưu hóa. Hãy kiểm tra kiến thức của bạn.
-                <div className="mt-4 p-4 bg-white dark:bg-slate-900 rounded-xl font-bold not-italic text-slate-800 dark:text-white">
-                  {currentQuizData.answer}
-                </div>
+               <div className="w-full">
+                <input
+                  type="text"
+                  autoFocus
+                  value={userInput}
+                  onChange={(e) => setUserInput(e.target.value)}
+                  onKeyDown={(e) => e.key === 'Enter' && (quizResult === null ? checkAnswer() : handleNext())}
+                  placeholder={currentQuizData.isWordToDef ? "Nhập nghĩa của từ..." : "Nhập từ vựng..."}
+                  className={`w-full p-5 glass rounded-2xl border-2 transition-all outline-none text-center text-lg font-medium ${
+                    quizResult === 'correct' ? 'border-green-400 bg-green-50/50' : 
+                    quizResult === 'wrong' ? 'border-red-400 bg-red-50/50' : 'border-slate-200 focus:border-primary'
+                  }`}
+                  disabled={quizResult !== null}
+                />
               </div>
             )}
           </div>
@@ -198,6 +226,12 @@ const SpecializedQuiz = ({ cards, allCards, mode, onFinish }) => {
               <p className={`font-black text-xl ${quizResult === 'correct' ? 'text-green-500' : 'text-red-500'}`}>
                 {quizResult === 'correct' ? 'CHÍNH XÁC!' : 'SAI MẤT RỒI!'}
               </p>
+              {quizResult === 'wrong' && (
+                <div className="text-center">
+                  <p className="text-xs text-slate-400 uppercase tracking-widest mb-1">Đáp án đúng:</p>
+                  <p className="font-bold text-slate-700 dark:text-slate-200">{currentQuizData.answer || currentQuizData.correctAnswers.join(', ')}</p>
+                </div>
+              )}
               <button 
                 onClick={handleNext}
                 className="w-full py-4 bg-primary text-white rounded-2xl font-bold flex items-center justify-center gap-2 hover:scale-[1.02] transition-all"
