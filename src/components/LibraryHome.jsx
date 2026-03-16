@@ -7,11 +7,13 @@ import {
   FileText, 
   Menu, 
   X,
-  BookOpen
+  BookOpen,
+  Trash2,
+  Edit2
 } from 'lucide-react';
 import ReactMarkdown from 'react-markdown';
 
-const MarkdownReader = ({ content, title }) => {
+const MarkdownReader = ({ content, title, onEdit, onDelete }) => {
   if (!content) return (
     <div className="flex flex-col items-center justify-center p-12 text-center">
       <div className="w-16 h-16 bg-slate-100 dark:bg-slate-800 rounded-full flex items-center justify-center mb-4">
@@ -27,10 +29,26 @@ const MarkdownReader = ({ content, title }) => {
       animate={{ opacity: 1, y: 0 }}
       className="max-w-4xl mx-auto"
     >
-      <header className="mb-10 pb-6 border-b border-slate-200 dark:border-slate-800">
+      <header className="mb-10 pb-6 border-b border-slate-200 dark:border-slate-800 flex justify-between items-start">
         <h1 className="text-4xl font-extrabold text-slate-800 dark:text-white tracking-tight">
           {title}
         </h1>
+        <div className="flex gap-2">
+          <button 
+            onClick={onEdit}
+            className="p-2 rounded-xl hover:bg-slate-100 dark:hover:bg-slate-800 text-slate-400 hover:text-primary transition-all"
+            title="Sửa tài liệu"
+          >
+            <Edit2 size={20} />
+          </button>
+          <button 
+            onClick={onDelete}
+            className="p-2 rounded-xl hover:bg-slate-100 dark:hover:bg-slate-800 text-slate-400 hover:text-red-500 transition-all"
+            title="Xóa tài liệu"
+          >
+            <Trash2 size={20} />
+          </button>
+        </div>
       </header>
       
       <div className="prose prose-slate dark:prose-invert max-w-none 
@@ -49,11 +67,16 @@ const MarkdownReader = ({ content, title }) => {
   );
 };
 
-const LibraryHome = ({ documents }) => {
+const LibraryHome = ({ documents, onEdit, onDelete }) => {
   const [searchTerm, setSearchTerm] = useState('');
   const [selectedDoc, setSelectedDoc] = useState(null);
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
   const [expandedCategories, setExpandedCategories] = useState({});
+
+  // Sync selected doc if updated
+  const currentDoc = useMemo(() => {
+    return selectedDoc ? documents.find(d => d.id === selectedDoc.id) : null;
+  }, [documents, selectedDoc]);
 
   // Parse category tree
   const categoryTree = useMemo(() => {
@@ -194,7 +217,15 @@ const LibraryHome = ({ documents }) => {
       {/* Reader Area */}
       <section className="flex-1 min-w-0">
         <div className="glass-card min-h-[60vh]">
-          <MarkdownReader content={selectedDoc?.content} title={selectedDoc?.title} />
+          <MarkdownReader 
+            content={currentDoc?.content} 
+            title={currentDoc?.title} 
+            onEdit={() => onEdit(currentDoc)}
+            onDelete={() => {
+              onDelete(currentDoc.id);
+              setSelectedDoc(null);
+            }}
+          />
         </div>
       </section>
     </div>

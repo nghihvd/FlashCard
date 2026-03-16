@@ -50,7 +50,7 @@ const AddCardModal = ({ isOpen, onClose, onAdd, initialData }) => {
             initial={{ opacity: 0, scale: 0.9, y: 20 }}
             animate={{ opacity: 1, scale: 1, y: 0 }}
             exit={{ opacity: 0, scale: 0.9, y: 20 }}
-            className="w-full max-w-md glass-card relative z-10 !p-8"
+            className="w-full max-w-4xl bg-slate-900/90 backdrop-blur-2xl border border-white/10 rounded-[2.5rem] relative z-10 p-8 lg:p-12 shadow-2xl"
           >
             <button 
               onClick={onClose}
@@ -68,101 +68,104 @@ const AddCardModal = ({ isOpen, onClose, onAdd, initialData }) => {
               </h2>
             </div>
 
-            <form onSubmit={handleSubmit} className="space-y-6">
-              <div>
-                <label className="block text-sm font-semibold text-slate-600 dark:text-slate-400 mb-2 px-1">
-                  Từ vựng (Word)
-                </label>
-                <div className="relative">
-                  <BookOpen className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-slate-400" />
-                  <input
-                    type="text"
-                    required
-                    value={formData.word}
-                    onChange={(e) => setFormData({...formData, word: e.target.value})}
-                    placeholder="Ví dụ: Serendipity"
-                    className="w-full pl-12 pr-4 py-4 glass rounded-2xl border-2 border-transparent focus:border-primary outline-none transition-all font-medium"
-                  />
+            <form onSubmit={handleSubmit} className="grid grid-cols-1 md:grid-cols-2 gap-8">
+              <div className="space-y-6">
+                <div>
+                  <label className="block text-sm font-bold text-slate-400 mb-3 px-1 uppercase tracking-wider">
+                    Từ vựng (Word)
+                  </label>
+                  <div className="relative group">
+                    <BookOpen className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-slate-500 group-focus-within:text-purple-400 transition-colors" />
+                    <input
+                      type="text"
+                      required
+                      value={formData.word}
+                      onChange={(e) => setFormData({...formData, word: e.target.value})}
+                      placeholder="Ví dụ: Serendipity"
+                      className="w-full pl-12 pr-4 py-4 bg-white/5 border border-white/10 text-white rounded-2xl outline-none focus:ring-2 focus:ring-purple-500/20 focus:border-purple-500/50 transition-all font-medium placeholder:text-slate-600"
+                    />
+                  </div>
+                </div>
+
+                <div className="grid grid-cols-2 gap-4">
+                  <div>
+                    <label className="block text-sm font-bold text-slate-400 mb-3 px-1 uppercase tracking-wider">
+                      Từ loại
+                    </label>
+                    <input
+                      type="text"
+                      value={formData.pos}
+                      onChange={(e) => setFormData({...formData, pos: e.target.value})}
+                      placeholder="n, v, adj..."
+                      className="w-full px-4 py-4 bg-white/5 border border-white/10 text-white rounded-2xl outline-none focus:ring-2 focus:ring-purple-500/20 focus:border-purple-500/50 transition-all font-medium placeholder:text-slate-600"
+                    />
+                  </div>
+                  <div>
+                    <label className="block text-sm font-bold text-slate-400 mb-3 px-1 uppercase tracking-wider">
+                      Ghi chú
+                    </label>
+                    <input
+                      type="text"
+                      value={formData.related}
+                      onChange={(e) => setFormData({...formData, related: e.target.value})}
+                      placeholder="fruit, red..."
+                      className="w-full px-4 py-4 bg-white/5 border border-white/10 text-white rounded-2xl outline-none focus:ring-2 focus:ring-purple-500/20 focus:border-purple-500/50 transition-all font-medium placeholder:text-slate-600"
+                    />
+                  </div>
+                </div>
+
+                <div className="grid grid-cols-2 gap-4">
+                  <div>
+                    <label className="block text-sm font-bold text-slate-400 mb-3 px-1 uppercase tracking-wider">
+                      Đồng nghĩa
+                    </label>
+                    <input
+                      type="text"
+                      value={formData.synonyms}
+                      onChange={(e) => setFormData({...formData, synonyms: e.target.value})}
+                      placeholder="comma separated..."
+                      className="w-full px-4 py-4 bg-white/5 border border-white/10 text-white rounded-2xl outline-none focus:ring-2 focus:ring-purple-500/20 focus:border-purple-500/50 transition-all font-medium placeholder:text-slate-600"
+                    />
+                  </div>
+                  <div>
+                    <label className="block text-sm font-bold text-slate-400 mb-3 px-1 uppercase tracking-wider">
+                      Trái nghĩa
+                    </label>
+                    <input
+                      type="text"
+                      value={formData.antonyms}
+                      onChange={(e) => setFormData({...formData, antonyms: e.target.value})}
+                      placeholder="comma separated..."
+                      className="w-full px-4 py-4 bg-white/5 border border-white/10 text-white rounded-2xl outline-none focus:ring-2 focus:ring-purple-500/20 focus:border-purple-500/50 transition-all font-medium placeholder:text-slate-600"
+                    />
+                  </div>
                 </div>
               </div>
 
-              <div className="grid grid-cols-2 gap-4">
+              <div className="space-y-6 flex flex-col justify-between">
                 <div>
-                  <label className="block text-sm font-semibold text-slate-600 dark:text-slate-400 mb-2 px-1">
-                    Từ loại (POS)
+                  <label className="block text-sm font-bold text-slate-400 mb-3 px-1 uppercase tracking-wider">
+                    Định nghĩa (Definition)
                   </label>
-                  <input
-                    type="text"
-                    value={formData.pos}
-                    onChange={(e) => setFormData({...formData, pos: e.target.value})}
-                    placeholder="n, v, adj..."
-                    className="w-full px-4 py-4 glass rounded-2xl border-2 border-transparent focus:border-primary outline-none transition-all font-medium"
-                  />
+                  <div className="relative group h-full">
+                    <Layers className="absolute left-4 top-4 w-5 h-5 text-slate-500 group-focus-within:text-purple-400 transition-colors" />
+                    <textarea
+                      required
+                      value={formData.definition}
+                      onChange={(e) => setFormData({...formData, definition: e.target.value})}
+                      placeholder="Nhập nghĩa hoặc dịch..."
+                      className="w-full pl-12 pr-4 py-4 bg-white/5 border border-white/10 text-white rounded-2xl outline-none focus:ring-2 focus:ring-purple-500/20 focus:border-purple-500/50 transition-all font-medium resize-none h-[220px]"
+                    />
+                  </div>
                 </div>
-                <div>
-                  <label className="block text-sm font-semibold text-slate-600 dark:text-slate-400 mb-2 px-1">
-                    Gợi ý liên quan
-                  </label>
-                  <input
-                    type="text"
-                    value={formData.related}
-                    onChange={(e) => setFormData({...formData, related: e.target.value})}
-                    placeholder="ví dụ: fruit, red..."
-                    className="w-full px-4 py-4 glass rounded-2xl border-2 border-transparent focus:border-primary outline-none transition-all font-medium"
-                  />
-                </div>
-              </div>
 
-              <div className="grid grid-cols-2 gap-4">
-                <div>
-                  <label className="block text-sm font-semibold text-slate-600 dark:text-slate-400 mb-2 px-1">
-                    Từ đồng nghĩa
-                  </label>
-                  <input
-                    type="text"
-                    value={formData.synonyms}
-                    onChange={(e) => setFormData({...formData, synonyms: e.target.value})}
-                    placeholder="cách nhau bằng dấu phẩy..."
-                    className="w-full px-4 py-4 glass rounded-2xl border-2 border-transparent focus:border-primary outline-none transition-all font-medium"
-                  />
-                </div>
-                <div>
-                  <label className="block text-sm font-semibold text-slate-600 dark:text-slate-400 mb-2 px-1">
-                    Từ trái nghĩa
-                  </label>
-                  <input
-                    type="text"
-                    value={formData.antonyms}
-                    onChange={(e) => setFormData({...formData, antonyms: e.target.value})}
-                    placeholder="cách nhau bằng dấu phẩy..."
-                    className="w-full px-4 py-4 glass rounded-2xl border-2 border-transparent focus:border-primary outline-none transition-all font-medium"
-                  />
-                </div>
+                <button
+                  type="submit"
+                  className="w-full py-5 bg-gradient-to-r from-purple-600 to-indigo-600 text-white rounded-2xl font-black text-lg shadow-xl shadow-purple-500/20 hover:scale-[1.02] transition-all active:scale-[0.98] mt-auto"
+                >
+                  {initialData ? 'CẬP NHẬT NGAY' : 'LƯU VÀO GOOGLE SHEETS'}
+                </button>
               </div>
-
-              <div>
-                <label className="block text-sm font-semibold text-slate-600 dark:text-slate-400 mb-2 px-1">
-                  Định nghĩa (Definition)
-                </label>
-                <div className="relative">
-                  <Layers className="absolute left-4 top-4 w-5 h-5 text-slate-400" />
-                  <textarea
-                    required
-                    rows="3"
-                    value={formData.definition}
-                    onChange={(e) => setFormData({...formData, definition: e.target.value})}
-                    placeholder="Nhập nghĩa hoặc dịch..."
-                    className="w-full pl-12 pr-4 py-4 glass rounded-2xl border-2 border-transparent focus:border-primary outline-none transition-all font-medium resize-none"
-                  />
-                </div>
-              </div>
-
-              <button
-                type="submit"
-                className="w-full py-4 bg-primary text-white rounded-2xl font-bold shadow-xl shadow-primary/30 hover:bg-primary-dark transition-all active:scale-[0.98] mt-4"
-              >
-                {initialData ? 'Cập nhật ngay' : 'Lưu vào Google Sheets'}
-              </button>
             </form>
           </motion.div>
         </div>

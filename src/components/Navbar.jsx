@@ -1,34 +1,64 @@
 import React from 'react';
-import { Sun, Moon, Plus } from 'lucide-react';
+import { Sun, Moon, Plus, Brain, PlayCircle, HelpCircle, Library as LibraryIcon } from 'lucide-react';
 
-const Navbar = ({ onAddClick, darkMode, toggleDarkMode }) => {
+const Navbar = ({ onAddClick, darkMode, toggleDarkMode, view, setView }) => {
+  const tabs = [
+    { id: 'study', label: 'Học tập', icon: <PlayCircle size={18} /> },
+    { id: 'quiz', label: 'Quiz Center', icon: <HelpCircle size={18} /> },
+    { id: 'library', label: 'Thư viện', icon: <LibraryIcon size={18} /> },
+    { id: 'documents', label: 'Tài liệu', icon: <Brain size={18} /> },
+  ];
+
   return (
-    <nav className="fixed top-0 left-0 right-0 z-50 px-4 py-4 pointer-events-none">
-      <div className="container mx-auto max-w-6xl flex justify-between items-center bg-white/10 dark:bg-slate-900/10 backdrop-blur-md border border-white/20 dark:border-slate-700/30 rounded-2xl px-6 py-3 shadow-lg pointer-events-auto">
-        <div className="flex items-center gap-3">
-          <h1 className="text-xl font-bold bg-gradient-to-r from-primary to-blue-500 bg-clip-text text-transparent italic">
-            FlashLearn
+    <nav className="fixed top-0 left-0 right-0 z-50 px-4 py-6">
+      <div className="container mx-auto max-w-6xl flex justify-between items-center bg-slate-900/90 backdrop-blur-xl border border-white/10 rounded-2xl px-6 py-4 shadow-2xl">
+        {/* Left: Branding */}
+        <div className="flex items-center gap-4 group cursor-pointer" onClick={() => setView('study')}>
+          <div className="p-2.5 bg-gradient-to-br from-purple-500 to-indigo-600 rounded-2xl shadow-lg shadow-purple-500/20 group-hover:scale-110 transition-transform">
+            <Brain size={24} className="text-white" />
+          </div>
+          <h1 className="text-xl font-extrabold text-white tracking-tight">
+            FlashCard <span className="text-purple-400">Pro</span>
           </h1>
-          <span className="px-2 py-0.5 rounded-lg bg-slate-100 dark:bg-slate-800 text-[10px] font-bold text-slate-500 uppercase tracking-widest">
-            {view === 'study' ? 'Học tập' : 'Thư viện'}
-          </span>
         </div>
 
-        
+        {/* Right: Navigation Tabs */}
         <div className="flex items-center gap-2">
-          <button
-            onClick={onAddClick}
-            className="p-2 mr-2 rounded-xl bg-primary text-white shadow-lg shadow-primary/20 hover:scale-105 active:scale-95 transition-all"
-          >
-            <Plus size={20} />
-          </button>
-          
-          <button
-            onClick={toggleDarkMode}
-            className="p-2 rounded-xl glass hover:bg-slate-100 dark:hover:bg-slate-800 transition-all"
-          >
-            {darkMode ? <Sun size={20} className="text-yellow-400" /> : <Moon size={20} className="text-slate-600" />}
-          </button>
+          <div className="flex items-center gap-1 bg-white/5 p-1.5 rounded-2xl border border-white/5 mr-4">
+            {tabs.map((tab) => (
+              <button
+                key={tab.id}
+                onClick={() => setView(tab.id)}
+                className={`flex items-center gap-2 px-5 py-2.5 rounded-xl text-sm font-bold transition-all ${
+                  view === tab.id
+                    ? 'bg-white/10 text-purple-400 shadow-inner'
+                    : 'text-slate-400 hover:text-white hover:bg-white/5'
+                }`}
+              >
+                <span className={view === tab.id ? 'text-purple-400' : 'text-slate-400'}>
+                  {tab.icon}
+                </span>
+                {tab.label}
+              </button>
+            ))}
+          </div>
+
+          <div className="flex items-center gap-2 pl-4 border-l border-white/10">
+            <button
+              onClick={onAddClick}
+              className="p-2.5 rounded-2xl bg-white/5 text-slate-300 hover:text-white hover:bg-white/10 transition-all border border-white/5"
+              title="Thêm mới"
+            >
+              <Plus size={20} />
+            </button>
+            
+            <button
+              onClick={toggleDarkMode}
+              className="p-2.5 rounded-2xl bg-white/5 text-slate-300 hover:text-white hover:bg-white/10 transition-all border border-white/5"
+            >
+              {darkMode ? <Sun size={20} className="text-yellow-400" /> : <Moon size={20} className="text-slate-400" />}
+            </button>
+          </div>
         </div>
       </div>
     </nav>

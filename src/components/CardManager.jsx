@@ -14,11 +14,11 @@ const CardManager = ({ cards, onDelete, onEdit }) => {
     <div className="w-full max-w-5xl mx-auto py-8 px-4 animate-in fade-in slide-in-from-bottom-4 duration-500">
       <div className="flex flex-col md:flex-row justify-between items-center mb-8 gap-4">
         <div>
-          <h2 className="text-3xl font-bold text-slate-800 dark:text-white flex items-center gap-3">
-            <Book className="text-primary w-8 h-8" />
+          <h2 className="text-3xl font-bold text-white flex items-center gap-3">
+            <Book className="text-purple-400 w-8 h-8" />
             Thư viện từ vựng
           </h2>
-          <p className="text-slate-500 mt-1">Quản lý và ôn tập tất cả các từ của bạn ({cards.length})</p>
+          <p className="text-slate-400 mt-1">Quản lý và ôn tập tất cả các từ của bạn ({cards.length})</p>
         </div>
 
         <div className="relative w-full md:w-72">
@@ -28,14 +28,14 @@ const CardManager = ({ cards, onDelete, onEdit }) => {
             placeholder="Tìm kiếm từ vựng..."
             value={searchTerm}
             onChange={(e) => setSearchTerm(e.target.value)}
-            className="w-full pl-12 pr-4 py-3 glass rounded-2xl border-2 border-transparent focus:border-primary outline-none transition-all"
+            className="w-full pl-12 pr-4 py-3 bg-white/5 border border-white/10 text-white rounded-2xl outline-none focus:ring-2 focus:ring-purple-500/20 transition-all font-medium placeholder:text-slate-500"
           />
         </div>
       </div>
 
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
         {filteredCards.map((card) => (
-          <div key={card.id} className="glass-card group flex flex-col justify-between hover:scale-[1.02] transition-all">
+          <div key={card.id} className="bg-white/5 backdrop-blur-xl border border-white/10 rounded-3xl p-6 group flex flex-col justify-between hover:scale-[1.02] transition-all shadow-xl">
             <div>
               <div className="flex justify-between items-start mb-4">
                 <div className="flex items-center gap-2">

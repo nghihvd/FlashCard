@@ -15,10 +15,10 @@ const Card3D = ({ front, back, isFlipped, onFlip }) => {
               {front.pos || 'Word'}
             </span>
           </div>
-          <h2 className="text-4xl md:text-5xl font-extrabold text-slate-800 dark:text-white tracking-tight">
+          <h2 className="text-4xl md:text-5xl font-extrabold text-slate-900 tracking-tight">
             {front.word}
           </h2>
-          <p className="mt-4 text-slate-400 dark:text-slate-500 font-medium italic">
+          <p className="mt-4 text-slate-500 font-medium italic">
             Tap to reveal definition
           </p>
           
@@ -32,18 +32,18 @@ const Card3D = ({ front, back, isFlipped, onFlip }) => {
               Meaning
             </span>
           </div>
-          <h3 className="text-3xl md:text-4xl font-bold text-slate-800 dark:text-white mb-8">
+          <h3 className="text-3xl md:text-4xl font-bold text-slate-800 mb-8">
             {back.definition}
           </h3>
           
           {back.related && (
-            <div className="mt-4 p-4 glass rounded-2xl border-primary/10">
-              <span className="text-xs font-bold text-primary uppercase block mb-1">Related</span>
-              <p className="text-sm text-slate-600 dark:text-slate-400">{back.related}</p>
+            <div className="mt-4 p-4 bg-slate-50 rounded-2xl border border-slate-100">
+              <span className="text-xs font-bold text-purple-600 uppercase block mb-1">Related</span>
+              <p className="text-sm text-slate-600">{back.related}</p>
             </div>
           )}
           
-          <p className="mt-8 text-slate-400 dark:text-slate-500 text-sm italic">
+          <p className="mt-8 text-slate-400 text-sm italic">
             Tap to flip back
           </p>
         </div>

@@ -96,8 +96,8 @@ const ReviewSession = ({ cards, onAssessment }) => {
           <Card3D 
             front={{ word: currentCard.word, pos: currentCard.pos }}
             back={{ definition: currentCard.definition, related: currentCard.related }}
-            isFlipped={isFlipped || step >= 2} 
-            onFlip={() => step === 1 && setIsFlipped(!isFlipped)}
+            isFlipped={isFlipped} 
+            onFlip={() => setIsFlipped(!isFlipped)}
           />
 
           <div className="mt-12 flex gap-4 w-full max-w-lg">
@@ -114,10 +114,10 @@ const ReviewSession = ({ cards, onAssessment }) => {
             {step === 2 && (
               <button
                 onClick={() => {
-                  setIsFlipped(true);
+                  setIsFlipped(true); // Ensure it's flipped to show answer
                   setStep(3);
                 }}
-                className="flex-1 flex items-center justify-center gap-2 px-8 py-4 bg-primary text-white rounded-[2rem] font-bold shadow-xl shadow-primary/20 transition-all hover:scale-[1.02] active:scale-[0.98]"
+                className="flex-1 flex items-center justify-center gap-2 px-8 py-4 bg-purple-600 text-white rounded-[2rem] font-bold shadow-xl shadow-purple-500/20 transition-all hover:scale-[1.02] active:scale-[0.98]"
               >
                 <Eye size={20} />
                 Xem kết quả
@@ -125,22 +125,25 @@ const ReviewSession = ({ cards, onAssessment }) => {
             )}
 
             {step === 3 && (
-              <>
-                <button
-                  onClick={() => handleAssessment('fail')}
-                  className="flex-1 flex items-center justify-center gap-2 px-6 py-4 bg-red-500/10 text-red-500 rounded-3xl font-bold border border-red-500/20 hover:bg-red-500 hover:text-white transition-all shadow-lg shadow-red-500/5"
-                >
-                  <XCircle size={20} />
-                  Quên
-                </button>
-                <button
-                  onClick={() => handleAssessment('pass')}
-                  className="flex-1 flex items-center justify-center gap-2 px-6 py-4 bg-green-500/10 text-green-500 rounded-3xl font-bold border border-green-500/20 hover:bg-green-500 hover:text-white transition-all shadow-lg shadow-green-500/5"
-                >
-                  <CheckCircle2 size={20} />
-                  Đã thuộc
-                </button>
-              </>
+              <div className="flex flex-col w-full gap-4">
+                <div className="flex gap-4">
+                  <button
+                    onClick={() => handleAssessment('fail')}
+                    className="flex-1 flex items-center justify-center gap-2 px-6 py-4 bg-red-500/10 text-red-500 rounded-3xl font-bold border border-red-500/20 hover:bg-red-500 hover:text-white transition-all shadow-lg shadow-red-500/5 text-sm"
+                  >
+                    <XCircle size={20} />
+                    Quên rồi
+                  </button>
+                  <button
+                    onClick={() => handleAssessment('pass')}
+                    className="flex-1 flex items-center justify-center gap-2 px-6 py-4 bg-green-500/10 text-green-500 rounded-3xl font-bold border border-green-500/20 hover:bg-green-500 hover:text-white transition-all shadow-lg shadow-green-500/5 text-sm"
+                  >
+                    <CheckCircle2 size={20} />
+                    Đã thuộc
+                  </button>
+                </div>
+                <p className="text-center text-xs text-slate-500 italic">Nhấn vào thẻ để lật lại xem từ vựng</p>
+              </div>
             )}
           </div>
         </motion.div>

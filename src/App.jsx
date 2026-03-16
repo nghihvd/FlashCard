@@ -3,9 +3,11 @@ import Layout from './components/Layout';
 import Navbar from './components/Navbar';
 import ReviewSession from './components/ReviewSession';
 import LibraryHome from './components/LibraryHome';
+import QuizCenter from './components/QuizCenter';
+import CardManager from './components/CardManager';
 import AddCardModal from './components/AddCardModal';
 import AddDocModal from './components/AddDocModal';
-import { fetchCards, fetchLibrary, updateCard, addCard } from './api/sheets';
+import { fetchCards, fetchLibrary, updateCard, addCard, deleteCard } from './api/sheets';
 import { calculateNextReview } from './utils/srs';
 
 function App() {
@@ -15,6 +17,8 @@ function App() {
   const [loading, setLoading] = useState(true);
   const [isCardModalOpen, setIsCardModalOpen] = useState(false);
   const [isDocModalOpen, setIsDocModalOpen] = useState(false);
+  const [editingCard, setEditingCard] = useState(null);
+  const [editingDoc, setEditingDoc] = useState(null);
   const [darkMode, setDarkMode] = useState(true);
 
   const today = new Date().toISOString().split('T')[0];
@@ -78,22 +82,51 @@ function App() {
   };
 
   const handleAddDoc = async (formData) => {
-    const newDoc = {
-      ...formData,
-      id: Date.now().toString(),
-    };
-    setLibrary(prev => [...prev, newDoc]);
-    await addCard(newDoc, 'Library');
+    if (editingDoc) {
+      // Update
+      setLibrary(prev => prev.map(doc => doc.id === editingDoc.id ? { ...doc, ...formData } : doc));
+      await updateCard(editingDoc.id, formData, 'Library');
+      setEditingDoc(null);
+    } else {
+      // Add
+      const newDoc = {
+        ...formData,
+        id: Date.now().toString(),
+      };
+      setLibrary(prev => [...prev, newDoc]);
+      await addCard(newDoc, 'Library');
+    }
     setIsDocModalOpen(false);
+  };
+
+  const handleDeleteDoc = async (id) => {
+    if (window.confirm('Bạn có chắc chắn muốn xóa tài liệu này?')) {
+      setLibrary(prev => prev.filter(doc => doc.id !== id));
+      await deleteCard(id, 'Library');
+    }
+  };
+
+  const handleEditDoc = (doc) => {
+    setEditingDoc(doc);
+    setIsDocModalOpen(true);
   };
 
   return (
     <Layout activeView={view} setView={setView}>
       <Navbar 
-        onAddClick={() => view === 'study' ? setIsCardModalOpen(true) : setIsDocModalOpen(true)}
+        onAddClick={() => {
+          if (view === 'study' || view === 'library') {
+            setEditingCard(null);
+            setIsCardModalOpen(true);
+          } else {
+            setEditingDoc(null);
+            setIsDocModalOpen(true);
+          }
+        }}
         darkMode={darkMode}
         toggleDarkMode={() => setDarkMode(!darkMode)}
         view={view}
+        setView={setView}
       />
 
       {loading ? (
@@ -107,8 +140,25 @@ function App() {
               cards={dueCards} 
               onAssessment={handleAssessment} 
             />
+          ) : view === 'quiz' ? (
+            <QuizCenter cards={cards} onStartQuiz={(quizCards) => {
+              // For now, let's just show them in study view or implement a specific quiz runner
+              setView('study');
+            }} />
+          ) : view === 'library' ? (
+            <CardManager 
+              cards={cards} 
+              onEditCard={(card) => {
+                setEditingCard(card);
+                setIsCardModalOpen(true);
+              }}
+            />
           ) : (
-            <LibraryHome documents={library} />
+            <LibraryHome 
+              documents={library} 
+              onEdit={handleEditDoc}
+              onDelete={handleDeleteDoc}
+            />
           )}
         </div>
       )}
@@ -121,8 +171,12 @@ function App() {
 
       <AddDocModal 
         isOpen={isDocModalOpen}
-        onClose={() => setIsDocModalOpen(false)}
+        onClose={() => {
+          setIsDocModalOpen(false);
+          setEditingDoc(null);
+        }}
         onAdd={handleAddDoc}
+        initialData={editingDoc}
       />
     </Layout>
   );
