@@ -32,12 +32,12 @@ const QuizCenter = ({ cards, onStartQuiz }) => {
     {
       id: 'related',
       title: 'Bậc thầy liên quan',
-      description: 'Chọn đúng các từ đồng nghĩa, trái nghĩa để ghi nhớ sâu.',
+      description: 'Chọn đúng các từ liên quan, đồng nghĩa, trái nghĩa để ghi nhớ sâu.',
       icon: <Zap className="w-6 h-6 text-blue-500" />,
-      count: cards.filter(c => c.synonyms || c.antonyms).length,
+      count: cards.filter(c => c.synonyms || c.antonyms || c.related).length,
       color: 'bg-blue-50 dark:bg-blue-950/30',
       borderColor: 'border-blue-100 dark:border-blue-900/50',
-      action: () => onStartQuiz(cards.filter(c => c.synonyms || c.antonyms), 'related')
+      action: () => onStartQuiz(cards.filter(c => c.synonyms || c.antonyms || c.related), 'related')
     }
   ];
 

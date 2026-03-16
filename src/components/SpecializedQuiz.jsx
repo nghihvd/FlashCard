@@ -19,7 +19,7 @@ const SpecializedQuiz = ({ cards, allCards, mode, onFinish }) => {
     // Generate type of question for this card
     // 0: Word -> Def, 1: Def -> Word, 2 (if available): Related
     let type = Math.floor(Math.random() * 2); 
-    if (mode === 'related' || (currentCard.synonyms || currentCard.antonyms)) {
+    if (mode === 'related' || (currentCard.synonyms || currentCard.antonyms || currentCard.related)) {
       type = 2;
     }
 
@@ -27,7 +27,8 @@ const SpecializedQuiz = ({ cards, allCards, mode, onFinish }) => {
       // Related Words Multiple Choice
       const synonyms = currentCard.synonyms ? currentCard.synonyms.split(',').map(s => s.trim()) : [];
       const antonyms = currentCard.antonyms ? currentCard.antonyms.split(',').map(s => s.trim()) : [];
-      const allCorrect = [...synonyms, ...antonyms];
+      const related = currentCard.related ? currentCard.related.split(',').map(s => s.trim()) : [];
+      const allCorrect = [...synonyms, ...antonyms, ...related];
       
       // Get distractors from other cards
       const otherWords = allCards
@@ -41,7 +42,7 @@ const SpecializedQuiz = ({ cards, allCards, mode, onFinish }) => {
       
       setCurrentQuizData({
         type: 'multi',
-        question: `Chọn tất cả từ đồng nghĩa hoặc trái nghĩa của:`,
+        question: `Chọn tất cả từ liên quan, đồng nghĩa hoặc trái nghĩa của:`,
         target: currentCard.word,
         options,
         correctAnswers: allCorrect
