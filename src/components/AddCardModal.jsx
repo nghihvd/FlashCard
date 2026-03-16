@@ -8,6 +8,8 @@ const AddCardModal = ({ isOpen, onClose, onAdd, initialData }) => {
     definition: '',
     pos: '',
     related: '',
+    synonyms: '',
+    antonyms: '',
   });
 
   useEffect(() => {
@@ -17,6 +19,8 @@ const AddCardModal = ({ isOpen, onClose, onAdd, initialData }) => {
         definition: initialData.definition || '',
         pos: initialData.pos || '',
         related: initialData.related || '',
+        synonyms: initialData.synonyms || '',
+        antonyms: initialData.antonyms || '',
       });
     } else {
       setFormData({ word: '', definition: '' });
@@ -97,13 +101,40 @@ const AddCardModal = ({ isOpen, onClose, onAdd, initialData }) => {
                 </div>
                 <div>
                   <label className="block text-sm font-semibold text-slate-600 dark:text-slate-400 mb-2 px-1">
-                    Từ liên quan
+                    Gợi ý liên quan
                   </label>
                   <input
                     type="text"
                     value={formData.related}
                     onChange={(e) => setFormData({...formData, related: e.target.value})}
-                    placeholder="synonyms..."
+                    placeholder="ví dụ: fruit, red..."
+                    className="w-full px-4 py-4 glass rounded-2xl border-2 border-transparent focus:border-primary outline-none transition-all font-medium"
+                  />
+                </div>
+              </div>
+
+              <div className="grid grid-cols-2 gap-4">
+                <div>
+                  <label className="block text-sm font-semibold text-slate-600 dark:text-slate-400 mb-2 px-1">
+                    Từ đồng nghĩa
+                  </label>
+                  <input
+                    type="text"
+                    value={formData.synonyms}
+                    onChange={(e) => setFormData({...formData, synonyms: e.target.value})}
+                    placeholder="cách nhau bằng dấu phẩy..."
+                    className="w-full px-4 py-4 glass rounded-2xl border-2 border-transparent focus:border-primary outline-none transition-all font-medium"
+                  />
+                </div>
+                <div>
+                  <label className="block text-sm font-semibold text-slate-600 dark:text-slate-400 mb-2 px-1">
+                    Từ trái nghĩa
+                  </label>
+                  <input
+                    type="text"
+                    value={formData.antonyms}
+                    onChange={(e) => setFormData({...formData, antonyms: e.target.value})}
+                    placeholder="cách nhau bằng dấu phẩy..."
                     className="w-full px-4 py-4 glass rounded-2xl border-2 border-transparent focus:border-primary outline-none transition-all font-medium"
                   />
                 </div>

@@ -3,6 +3,8 @@ import Navbar from './components/Navbar';
 import StudySession from './components/StudySession';
 import CardManager from './components/CardManager';
 import AddCardModal from './components/AddCardModal';
+import QuizCenter from './components/QuizCenter';
+import SpecializedQuiz from './components/SpecializedQuiz';
 import { fetchCards, addCard, updateCard, deleteCard } from './api/sheets';
 
 function App() {
@@ -11,7 +13,8 @@ function App() {
   const [editingCard, setEditingCard] = useState(null);
   const [darkMode, setDarkMode] = useState(false);
   const [loading, setLoading] = useState(true);
-  const [view, setView] = useState('study'); // 'study' or 'library'
+  const [view, setView] = useState('study'); // 'study', 'library', 'quiz', 'quiz-active'
+  const [activeQuiz, setActiveQuiz] = useState({ cards: [], mode: '' });
 
   const today = new Date().toISOString().split('T')[0];
 
@@ -27,6 +30,8 @@ function App() {
         next_review: card.next_review || today,
         pos: card.pos || '',
         related: card.related || '',
+        synonyms: card.synonyms || '',
+        antonyms: card.antonyms || '',
       }));
       setCards(normalizedData);
     } else {
@@ -117,6 +122,7 @@ function App() {
           view === 'study' ? (
             <StudySession 
               cards={dueCards} 
+              allCards={cards}
               onAssessment={(id, status) => {
                 const card = cards.find(c => c.id === id);
                 if (!card) return;
@@ -152,6 +158,21 @@ function App() {
                 };
                 handleUpdateSRS(id, updates);
               }} 
+            />
+          ) : view === 'quiz' ? (
+            <QuizCenter 
+              cards={cards} 
+              onStartQuiz={(quizCards, mode) => {
+                setActiveQuiz({ cards: quizCards, mode });
+                setView('quiz-active');
+              }} 
+            />
+          ) : view === 'quiz-active' ? (
+            <SpecializedQuiz 
+              cards={activeQuiz.cards} 
+              allCards={cards}
+              mode={activeQuiz.mode}
+              onFinish={() => setView('quiz')}
             />
           ) : (
             <CardManager 

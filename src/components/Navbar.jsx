@@ -1,5 +1,5 @@
 import React from 'react';
-import { Plus, Brain, Settings, Sun, Moon, Library, PlayCircle } from 'lucide-react';
+import { Plus, Brain, Settings, Sun, Moon, Library, PlayCircle, HelpCircle } from 'lucide-react';
 
 const Navbar = ({ onAddClick, darkMode, toggleDarkMode, view, setView }) => {
   return (
@@ -24,6 +24,15 @@ const Navbar = ({ onAddClick, darkMode, toggleDarkMode, view, setView }) => {
             >
               <PlayCircle className="w-4 h-4" />
               <span className="hidden md:inline">Học tập</span>
+            </button>
+            <button
+              onClick={() => setView('quiz')}
+              className={`flex items-center gap-2 px-4 py-1.5 rounded-lg text-sm font-bold transition-all ${
+                view === 'quiz' ? 'bg-white dark:bg-slate-700 text-primary shadow-sm' : 'text-slate-500'
+              }`}
+            >
+              <HelpCircle className="w-4 h-4" />
+              <span className="hidden md:inline">Quiz Center</span>
             </button>
             <button
               onClick={() => setView('library')}
