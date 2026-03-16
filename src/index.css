@@ -6,29 +6,30 @@
 }
 
 @theme {
-  --color-primary-light: #aa3bff;
-  --color-primary: #8a2be2;
-  --color-primary-dark: #6a1bb3;
+  --color-primary-light: #c084fc;
+  --color-primary: #a855f7;
+  --color-primary-dark: #9333ea;
+  --color-glass: rgba(255, 255, 255, 0.05);
 }
 
 @layer base {
   body {
-    @apply bg-slate-50 text-slate-900 dark:bg-slate-950 dark:text-slate-100 transition-colors duration-300;
+    @apply bg-slate-50 text-slate-900 dark:bg-[#020617] dark:text-slate-100 transition-colors duration-500;
   }
 }
 
 @utility glass {
-  @apply bg-white/70 dark:bg-slate-900/70 backdrop-blur-md border border-white/20 dark:border-slate-700/30 shadow-xl;
+  @apply bg-white/40 dark:bg-slate-900/40 backdrop-blur-xl border border-white/20 dark:border-slate-700/30 shadow-2xl;
 }
 
 @layer components {
   .glass-card {
-    @apply glass rounded-2xl p-6 transition-all hover:shadow-2xl hover:border-white/40 dark:hover:border-slate-600/50;
+    @apply glass rounded-3xl p-8 transition-all duration-300 hover:shadow-[0_20px_50px_rgba(168,85,247,0.15)] hover:border-white/40 dark:hover:border-slate-600/50;
   }
 
   /* 3D Flip Card Styles */
   .flip-card {
-    perspective: 1000px;
+    perspective: 2000px;
     background-color: transparent;
   }
 
@@ -37,7 +38,7 @@
     width: 100%;
     height: 100%;
     text-align: center;
-    transition: transform 0.6s;
+    transition: transform 0.8s cubic-bezier(0.4, 0, 0.2, 1);
     transform-style: preserve-3d;
   }
 
@@ -51,10 +52,16 @@
     height: 100%;
     backface-visibility: hidden;
     -webkit-backface-visibility: hidden;
-    @apply glass rounded-2xl flex flex-col items-center justify-center p-8;
+    @apply glass rounded-[2.5rem] flex flex-col items-center justify-center p-12 overflow-hidden;
   }
 
   .flip-card-back {
     transform: rotateY(180deg);
   }
+
+  /* Premium Background Blobs */
+  .blob {
+    @apply absolute rounded-full blur-[100px] opacity-20 animate-pulse pointer-events-none;
+  }
 }
+

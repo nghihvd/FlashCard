@@ -1,0 +1,55 @@
+import React from 'react';
+import { motion } from 'framer-motion';
+
+const Card3D = ({ front, back, isFlipped, onFlip }) => {
+  return (
+    <div 
+      className={`flip-card w-full max-w-lg aspect-[4/5] cursor-pointer ${isFlipped ? 'flipped' : ''}`}
+      onClick={onFlip}
+    >
+      <div className="flip-card-inner">
+        {/* Front Face */}
+        <div className="flip-card-front">
+          <div className="absolute top-8 left-8">
+            <span className="px-3 py-1 bg-primary/10 text-primary text-xs font-bold rounded-full uppercase tracking-wider">
+              {front.pos || 'Word'}
+            </span>
+          </div>
+          <h2 className="text-4xl md:text-5xl font-extrabold text-slate-800 dark:text-white tracking-tight">
+            {front.word}
+          </h2>
+          <p className="mt-4 text-slate-400 dark:text-slate-500 font-medium italic">
+            Tap to reveal definition
+          </p>
+          
+          <div className="absolute bottom-12 w-12 h-1.5 bg-primary/20 rounded-full" />
+        </div>
+
+        {/* Back Face */}
+        <div className="flip-card-back">
+          <div className="absolute top-8 left-8">
+            <span className="px-3 py-1 bg-green-500/10 text-green-500 text-xs font-bold rounded-full uppercase tracking-wider">
+              Meaning
+            </span>
+          </div>
+          <h3 className="text-3xl md:text-4xl font-bold text-slate-800 dark:text-white mb-8">
+            {back.definition}
+          </h3>
+          
+          {back.related && (
+            <div className="mt-4 p-4 glass rounded-2xl border-primary/10">
+              <span className="text-xs font-bold text-primary uppercase block mb-1">Related</span>
+              <p className="text-sm text-slate-600 dark:text-slate-400">{back.related}</p>
+            </div>
+          )}
+          
+          <p className="mt-8 text-slate-400 dark:text-slate-500 text-sm italic">
+            Tap to flip back
+          </p>
+        </div>
+      </div>
+    </div>
+  );
+};
+
+export default Card3D;

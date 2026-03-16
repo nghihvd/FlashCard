@@ -1,201 +1,133 @@
 import React, { useState, useEffect } from 'react';
+import Layout from './components/Layout';
 import Navbar from './components/Navbar';
-import StudySession from './components/StudySession';
-import CardManager from './components/CardManager';
+import ReviewSession from './components/ReviewSession';
+import LibraryHome from './components/LibraryHome';
 import AddCardModal from './components/AddCardModal';
-import QuizCenter from './components/QuizCenter';
-import SpecializedQuiz from './components/SpecializedQuiz';
-import { fetchCards, addCard, updateCard, deleteCard } from './api/sheets';
+import AddDocModal from './components/AddDocModal';
+import { fetchCards, fetchLibrary, updateCard, addCard } from './api/sheets';
+import { calculateNextReview } from './utils/srs';
 
 function App() {
   const [cards, setCards] = useState([]);
-  const [isModalOpen, setIsModalOpen] = useState(false);
-  const [editingCard, setEditingCard] = useState(null);
-  const [darkMode, setDarkMode] = useState(false);
+  const [library, setLibrary] = useState([]);
+  const [view, setView] = useState('study'); // 'study', 'library'
   const [loading, setLoading] = useState(true);
-  const [view, setView] = useState('study'); // 'study', 'library', 'quiz', 'quiz-active'
-  const [activeQuiz, setActiveQuiz] = useState({ cards: [], mode: '' });
+  const [isCardModalOpen, setIsCardModalOpen] = useState(false);
+  const [isDocModalOpen, setIsDocModalOpen] = useState(false);
+  const [darkMode, setDarkMode] = useState(true);
 
   const today = new Date().toISOString().split('T')[0];
 
-  const loadCards = async () => {
+  const loadData = async () => {
     setLoading(true);
-    const data = await fetchCards();
-    if (data && data.length > 0) {
-      const normalizedData = data.map(card => ({
-        ...card,
-        level: card.level || 'new',
-        interval: parseInt(card.interval) || 0,
-        last_reviewed: card.last_reviewed || '',
-        next_review: card.next_review || today,
-        pos: card.pos || '',
-        related: card.related || '',
-        synonyms: card.synonyms || '',
-        antonyms: card.antonyms || '',
-      }));
-      setCards(normalizedData);
-    } else {
+    try {
+      const [cardsData, libraryData] = await Promise.allSettled([
+        fetchCards(),
+        fetchLibrary()
+      ]);
+      
+      const normalizedCards = cardsData.status === 'fulfilled' ? (cardsData.value || []) : [];
+      const normalizedLibrary = libraryData.status === 'fulfilled' ? (libraryData.value || []) : [];
+
+      setCards(Array.isArray(normalizedCards) ? normalizedCards : []);
+      setLibrary(Array.isArray(normalizedLibrary) ? normalizedLibrary : []);
+    } catch (error) {
+      console.error('Error loading data:', error);
       setCards([]);
+      setLibrary([]);
     }
     setLoading(false);
   };
 
   useEffect(() => {
-    loadCards();
+    loadData();
   }, []);
 
-  const dueCards = cards
-    .filter(card => !card.next_review || card.next_review <= today)
-    .sort((a, b) => {
-      const priority = { new: 1, familiar: 2, mastered: 3 };
-      return priority[a.level] - priority[b.level];
-    });
-
   useEffect(() => {
-    if (darkMode) {
-      document.documentElement.classList.add('dark');
-    } else {
-      document.documentElement.classList.remove('dark');
-    }
+    if (darkMode) document.documentElement.classList.add('dark');
+    else document.documentElement.classList.remove('dark');
   }, [darkMode]);
 
-  const handleAddOrEditCard = async (formData) => {
-    if (editingCard) {
-      // Edit existing card
-      const updatedCard = { ...editingCard, ...formData };
-      setCards(cards.map(c => c.id === editingCard.id ? updatedCard : c));
-      await updateCard(editingCard.id, formData);
-      setEditingCard(null);
-    } else {
-      // Add new card
-      const newCard = { 
-        ...formData, 
-        id: Date.now().toString(), 
-        level: 'new',
-        interval: 0,
-        last_reviewed: '',
-        next_review: today
-      };
-      setCards([...cards, newCard]);
-      await addCard(newCard);
-    }
-  };
+  const dueCards = cards.filter(card => !card.nextReview || card.nextReview <= today);
 
-  const handleUpdateSRS = async (id, updates) => {
-    setCards(cards.map(c => c.id === id ? { ...c, ...updates } : c));
+  const handleAssessment = async (id, isKnown) => {
+    const card = cards.find(c => c.id === id);
+    if (!card) return;
+
+    const updates = calculateNextReview(card.level, isKnown);
+    
+    // Optimistic update
+    setCards(prev => prev.map(c => c.id === id ? { ...c, ...updates } : c));
+    
+    // Persist to SheetDB
     await updateCard(id, updates);
   };
 
-  const handleDeleteCard = async (id) => {
-    if (window.confirm('Bạn có chắc chắn muốn xóa từ này?')) {
-      setCards(cards.filter(c => c.id !== id));
-      await deleteCard(id);
-    }
+  const handleAddCard = async (formData) => {
+    const newCard = {
+      ...formData,
+      id: Date.now().toString(),
+      level: 'new',
+      nextReview: today,
+      lastReviewed: ''
+    };
+    setCards(prev => [...prev, newCard]);
+    await addCard(newCard);
+    setIsCardModalOpen(false);
   };
 
-  const startEditing = (card) => {
-    setEditingCard(card);
-    setIsModalOpen(true);
-  };
-
-  const openAddModal = () => {
-    setEditingCard(null);
-    setIsModalOpen(true);
+  const handleAddDoc = async (formData) => {
+    const newDoc = {
+      ...formData,
+      id: Date.now().toString(),
+    };
+    setLibrary(prev => [...prev, newDoc]);
+    await addCard(newDoc, 'Library');
+    setIsDocModalOpen(false);
   };
 
   return (
-    <div className="min-h-screen bg-slate-50 dark:bg-slate-950 transition-colors pt-24 pb-12 font-inter">
+    <Layout activeView={view} setView={setView}>
       <Navbar 
-        onAddClick={openAddModal} 
+        onAddClick={() => view === 'study' ? setIsCardModalOpen(true) : setIsDocModalOpen(true)}
         darkMode={darkMode}
         toggleDarkMode={() => setDarkMode(!darkMode)}
         view={view}
-        setView={setView}
       />
 
-      <main className="container mx-auto px-4 max-w-7xl">
-        {loading ? (
-          <div className="flex items-center justify-center h-64">
-            <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary"></div>
-          </div>
-        ) : (
-          view === 'study' ? (
-            <StudySession 
+      {loading ? (
+        <div className="flex items-center justify-center py-40">
+          <div className="w-12 h-12 border-4 border-primary border-t-transparent rounded-full animate-spin" />
+        </div>
+      ) : (
+        <div className="mt-20">
+          {view === 'study' ? (
+            <ReviewSession 
               cards={dueCards} 
-              allCards={cards}
-              onAssessment={(id, status) => {
-                const card = cards.find(c => c.id === id);
-                if (!card) return;
-                
-                let newLevel = card.level;
-                let newInterval = card.interval;
-                const now = new Date();
-
-                if (status === 'pass') {
-                  if (card.level === 'new') {
-                    newLevel = 'familiar';
-                    newInterval = 3;
-                  } else if (card.level === 'familiar') {
-                    newLevel = 'mastered';
-                    newInterval = 30;
-                  } else if (card.level === 'mastered') {
-                    newLevel = 'mastered';
-                    newInterval = Math.min(card.interval * 2, 90);
-                  }
-                } else {
-                  newLevel = 'new';
-                  newInterval = 1;
-                }
-
-                const nextReviewDate = new Date(now);
-                nextReviewDate.setDate(now.getDate() + newInterval);
-                
-                const updates = {
-                  level: newLevel,
-                  interval: newInterval,
-                  last_reviewed: now.toISOString().split('T')[0],
-                  next_review: nextReviewDate.toISOString().split('T')[0]
-                };
-                handleUpdateSRS(id, updates);
-              }} 
-            />
-          ) : view === 'quiz' ? (
-            <QuizCenter 
-              cards={cards} 
-              onStartQuiz={(quizCards, mode) => {
-                setActiveQuiz({ cards: quizCards, mode });
-                setView('quiz-active');
-              }} 
-            />
-          ) : view === 'quiz-active' ? (
-            <SpecializedQuiz 
-              cards={activeQuiz.cards} 
-              allCards={cards}
-              mode={activeQuiz.mode}
-              onFinish={() => setView('quiz')}
+              onAssessment={handleAssessment} 
             />
           ) : (
-            <CardManager 
-              cards={cards} 
-              onDelete={handleDeleteCard}
-              onEdit={startEditing}
-            />
-          )
-        )}
-      </main>
+            <LibraryHome documents={library} />
+          )}
+        </div>
+      )}
 
       <AddCardModal 
-        isOpen={isModalOpen} 
-        onClose={() => setIsModalOpen(false)} 
-        onAdd={handleAddOrEditCard}
-        initialData={editingCard}
+        isOpen={isCardModalOpen}
+        onClose={() => setIsCardModalOpen(false)}
+        onAdd={handleAddCard}
       />
 
-      {/* Background blobs for aesthetics */}
-      <div className="fixed top-[-10%] left-[-10%] w-[40%] h-[40%] bg-primary/5 rounded-full blur-[120px] -z-10 pointer-events-none" />
-      <div className="fixed bottom-[-10%] right-[-10%] w-[40%] h-[40%] bg-blue-500/5 rounded-full blur-[120px] -z-10 pointer-events-none" />
-    </div>
+      <AddDocModal 
+        isOpen={isDocModalOpen}
+        onClose={() => setIsDocModalOpen(false)}
+        onAdd={handleAddDoc}
+      />
+    </Layout>
   );
 }
 
 export default App;
+
+

@@ -1,24 +1,45 @@
-const API_URL = 'https://sheetdb.io/api/v1/zqnnmsp3w4ctg';
+const API_URL = 'https://sheetdb.io/api/v1/vdu36mxnhq5um';
 
 /**
- * Fetch all cards from SheetDB
+ * Fetch data from a specific sheet
  */
-export const fetchCards = async () => {
+export const fetchFromSheet = async (sheetName) => {
   try {
-    const response = await fetch(API_URL);
+    const url = sheetName ? `${API_URL}?sheet=${sheetName}` : API_URL;
+    const response = await fetch(url);
+    if (!response.ok) throw new Error(`HTTP error! status: ${response.status}`);
     return await response.json();
   } catch (error) {
-    console.error('Error fetching cards:', error);
+    console.error(`Error fetching from sheet ${sheetName || 'default'}:`, error);
     return [];
   }
 };
 
 /**
+ * Fetch all cards from SheetDB (Default sheet)
+ */
+export const fetchCards = async () => {
+  return await fetchFromSheet();
+};
+
+
+/**
+ * Fetch library documents from SheetDB
+ */
+export const fetchLibrary = async () => {
+  return await fetchFromSheet('Library');
+};
+
+/**
  * Update a card's level or details via SheetDB
  */
-export const updateCard = async (id, updatedData) => {
+export const updateCard = async (id, updatedData, sheetName) => {
   try {
-    const response = await fetch(`${API_URL}/id/${id}`, {
+    const url = sheetName 
+      ? `${API_URL}/id/${id}?sheet=${sheetName}` 
+      : `${API_URL}/id/${id}`;
+      
+    const response = await fetch(url, {
       method: 'PATCH',
       headers: {
         'Content-Type': 'application/json'
@@ -35,9 +56,10 @@ export const updateCard = async (id, updatedData) => {
 /**
  * Add a new card to SheetDB
  */
-export const addCard = async (cardData) => {
+export const addCard = async (cardData, sheetName) => {
   try {
-    const response = await fetch(API_URL, {
+    const url = sheetName ? `${API_URL}?sheet=${sheetName}` : API_URL;
+    const response = await fetch(url, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json'
@@ -54,9 +76,13 @@ export const addCard = async (cardData) => {
 /**
  * Delete a card from SheetDB
  */
-export const deleteCard = async (id) => {
+export const deleteCard = async (id, sheetName) => {
   try {
-    const response = await fetch(`${API_URL}/id/${id}`, {
+    const url = sheetName 
+      ? `${API_URL}/id/${id}?sheet=${sheetName}` 
+      : `${API_URL}/id/${id}`;
+
+    const response = await fetch(url, {
       method: 'DELETE',
       headers: {
         'Content-Type': 'application/json'
@@ -68,3 +94,5 @@ export const deleteCard = async (id) => {
     return null;
   }
 };
+
+
