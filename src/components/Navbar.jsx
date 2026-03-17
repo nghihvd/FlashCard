@@ -3,9 +3,8 @@ import { Sun, Moon, Plus, Brain, PlayCircle, HelpCircle, Library as LibraryIcon 
 
 const Navbar = ({ onAddClick, darkMode, toggleDarkMode, view, setView }) => {
   const tabs = [
-    { id: 'study', label: 'Học tập', icon: <PlayCircle size={18} /> },
-    { id: 'quiz', label: 'Quiz Center', icon: <HelpCircle size={18} /> },
-    { id: 'library', label: 'Thư viện', icon: <LibraryIcon size={18} /> },
+    { id: 'study', label: 'Học tập', icon: <LibraryIcon size={18} /> },
+    { id: 'quiz', label: 'Kiểm tra', icon: <PlayCircle size={18} /> },
     { id: 'documents', label: 'Tài liệu', icon: <Brain size={18} /> },
   ];
 

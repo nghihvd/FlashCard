@@ -63,5 +63,17 @@
   .blob {
     @apply absolute rounded-full blur-[100px] opacity-20 animate-pulse pointer-events-none;
   }
+
+  .scrollbar-hide::-webkit-scrollbar {
+    display: none;
+  }
+  .scrollbar-hide {
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+  }
+
+  .phase1-card {
+    @apply scale-90 transition-transform duration-300 hover:scale-100;
+  }
 }
 
