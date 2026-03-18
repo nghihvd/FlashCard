@@ -31,7 +31,7 @@ const AddCardModal = ({ isOpen, onClose, onAdd, initialData }) => {
     e.preventDefault();
     if (!formData.word || !formData.definition) return;
     onAdd(formData);
-    setFormData({ word: '', definition: '' });
+    setFormData({ word: '', definition: '', pos: '', related: '', synonyms: '', antonyms: '' });
     onClose();
   };
 
@@ -87,7 +87,7 @@ const AddCardModal = ({ isOpen, onClose, onAdd, initialData }) => {
                   </div>
                 </div>
 
-                <div className="grid grid-cols-2 gap-4">
+                <div className="grid grid-cols-1 gap-6">
                   <div>
                     <label className="block text-sm font-bold text-slate-400 mb-3 px-1 uppercase tracking-wider">
                       Từ loại
@@ -104,12 +104,11 @@ const AddCardModal = ({ isOpen, onClose, onAdd, initialData }) => {
                     <label className="block text-sm font-bold text-slate-400 mb-3 px-1 uppercase tracking-wider">
                       Ghi chú
                     </label>
-                    <input
-                      type="text"
+                    <textarea
                       value={formData.related}
                       onChange={(e) => setFormData({...formData, related: e.target.value})}
                       placeholder="fruit, red..."
-                      className="w-full px-4 py-4 bg-white/5 border border-white/10 text-white rounded-2xl outline-none focus:ring-2 focus:ring-purple-500/20 focus:border-purple-500/50 transition-all font-medium placeholder:text-slate-600"
+                      className="w-full px-4 py-4 bg-white/5 border border-white/10 text-white rounded-2xl outline-none focus:ring-2 focus:ring-purple-500/20 focus:border-purple-500/50 transition-all font-medium placeholder:text-slate-600 resize-none h-28"
                     />
                   </div>
                 </div>
@@ -119,24 +118,22 @@ const AddCardModal = ({ isOpen, onClose, onAdd, initialData }) => {
                     <label className="block text-sm font-bold text-slate-400 mb-3 px-1 uppercase tracking-wider">
                       Đồng nghĩa
                     </label>
-                    <input
-                      type="text"
+                    <textarea
                       value={formData.synonyms}
                       onChange={(e) => setFormData({...formData, synonyms: e.target.value})}
                       placeholder="comma separated..."
-                      className="w-full px-4 py-4 bg-white/5 border border-white/10 text-white rounded-2xl outline-none focus:ring-2 focus:ring-purple-500/20 focus:border-purple-500/50 transition-all font-medium placeholder:text-slate-600"
+                      className="w-full px-4 py-4 bg-white/5 border border-white/10 text-white rounded-2xl outline-none focus:ring-2 focus:ring-purple-500/20 focus:border-purple-500/50 transition-all font-medium placeholder:text-slate-600 resize-none h-28"
                     />
                   </div>
                   <div>
                     <label className="block text-sm font-bold text-slate-400 mb-3 px-1 uppercase tracking-wider">
                       Trái nghĩa
                     </label>
-                    <input
-                      type="text"
+                    <textarea
                       value={formData.antonyms}
                       onChange={(e) => setFormData({...formData, antonyms: e.target.value})}
                       placeholder="comma separated..."
-                      className="w-full px-4 py-4 bg-white/5 border border-white/10 text-white rounded-2xl outline-none focus:ring-2 focus:ring-purple-500/20 focus:border-purple-500/50 transition-all font-medium placeholder:text-slate-600"
+                      className="w-full px-4 py-4 bg-white/5 border border-white/10 text-white rounded-2xl outline-none focus:ring-2 focus:ring-purple-500/20 focus:border-purple-500/50 transition-all font-medium placeholder:text-slate-600 resize-none h-28"
                     />
                   </div>
                 </div>
