@@ -119,7 +119,7 @@ const CardManager = ({ cards, onDelete, onEdit }) => {
                 <div className="flex items-center gap-2">
                   <span className={`px-4 py-1.5 rounded-full text-[10px] font-black uppercase tracking-wider ${
                     card.level === 'mastered' ? 'bg-green-500/10 text-green-400 border border-green-500/20' :
-                    card.level === 'familiar' ? 'bg-blue-500/10 text-blue-400 border border-blue-500/20' : 'bg-slate-500/10 text-slate-400 border border-slate-500/20'
+                    card.level === 'familiar' ? 'bg-blue-500/10 text-blue-400 border border-blue-500/20' : 'bg-primary/10 text-primary border border-primary/20'
                   }`}>
                     {card.level}
                   </span>
@@ -154,7 +154,7 @@ const CardManager = ({ cards, onDelete, onEdit }) => {
                   ({card.pos})
                 </span>
               )}
-              <p className="text-slate-400 text-base leading-relaxed font-medium line-clamp-3 mb-6 bg-white/5 p-4 rounded-2xl border border-white/5 italic">
+              <p className="text-slate-400 text-base leading-relaxed font-medium line-clamp-3 mb-6 bg-primary/5 p-4 rounded-2xl border border-primary/10 italic group-hover:bg-primary/10 transition-colors">
                 {card.definition}
               </p>
             </div>
