@@ -155,6 +155,7 @@ function App() {
                 allCards={cards}
                 onAssessment={handleAssessment} 
                 onComplete={() => setQuizMode(null)}
+                skipPreview={true}
               />
             ) : (
               <div className="flex flex-col items-center justify-center py-20 text-white">

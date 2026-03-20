@@ -1,7 +1,8 @@
 import React, { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { ChevronLeft, ChevronRight, Brain, RotateCcw, Check, X, ArrowRight } from 'lucide-react';
+import { ChevronLeft, ChevronRight, Brain, RotateCcw, Check, X, ArrowRight, Volume2 } from 'lucide-react';
 import Flashcard from './Flashcard';
+import { speak } from '../utils/speech';
 
 const StudySession = ({ cards, allCards, onAssessment }) => {
   const [sessionPhase, setSessionPhase] = useState('preview-all'); // 'preview-all', 'learning', 'completed', 'quiz'
@@ -209,9 +210,20 @@ const StudySession = ({ cards, allCards, onAssessment }) => {
                   <p className="text-slate-500 text-sm mb-2">
                     {quizMode === 'w-to-d' ? 'Dịch từ này sang Tiếng Việt:' : 'Từ vựng này là gì?'}
                   </p>
-                  <h2 className="text-3xl font-bold text-slate-800 dark:text-white">
-                    {quizMode === 'w-to-d' ? quizCards[quizIndex].word : quizCards[quizIndex].definition}
-                  </h2>
+                  <div className="flex items-center justify-center gap-3">
+                    <h2 className="text-3xl font-bold text-slate-800 dark:text-white">
+                      {quizMode === 'w-to-d' ? quizCards[quizIndex].word : quizCards[quizIndex].definition}
+                    </h2>
+                    {quizMode === 'w-to-d' && (
+                      <button 
+                        onClick={() => speak(quizCards[quizIndex].word)}
+                        className="p-2 rounded-xl bg-primary/10 text-primary hover:bg-primary/20 transition-all"
+                        title="Nghe phát âm"
+                      >
+                        <Volume2 className="w-5 h-5" />
+                      </button>
+                    )}
+                  </div>
                 </div>
 
                 <div className="w-full">
@@ -272,9 +284,20 @@ const StudySession = ({ cards, allCards, onAssessment }) => {
                     <span className="text-xs font-bold text-slate-400 uppercase tracking-widest mb-2 block">
                       {learningStep === 'practice-1' ? 'Đoán định nghĩa' : 'Đoán từ vựng'}
                     </span>
-                    <h2 className="text-4xl font-bold text-slate-800 dark:text-white">
-                      {learningStep === 'practice-1' ? currentCard.word : currentCard.definition}
-                    </h2>
+                    <div className="flex items-center justify-center gap-3">
+                      <h2 className="text-4xl font-bold text-slate-800 dark:text-white">
+                        {learningStep === 'practice-1' ? currentCard.word : currentCard.definition}
+                      </h2>
+                      {learningStep === 'practice-1' && (
+                        <button 
+                          onClick={() => speak(currentCard.word)}
+                          className="p-2 rounded-xl bg-primary/10 text-primary hover:bg-primary/20 transition-all"
+                          title="Nghe phát âm"
+                        >
+                          <Volume2 className="w-5 h-5" />
+                        </button>
+                      )}
+                    </div>
                   </div>
 
                   <div className="w-full px-6">

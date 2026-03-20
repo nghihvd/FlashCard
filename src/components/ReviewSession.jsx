@@ -1,7 +1,8 @@
 import React, { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { CheckCircle2, XCircle, ArrowRight, Play, Home, ChevronLeft, ChevronRight, Check, X, ListCheck } from 'lucide-react';
+import { CheckCircle2, XCircle, ArrowRight, Play, Home, ChevronLeft, ChevronRight, Check, X, ListCheck, Volume2 } from 'lucide-react';
 import Card3D from './Card3D';
+import { speak } from '../utils/speech';
 
 const PHASES = [
   { id: 'flip-list', label: 'Xem lướt vựng' },
@@ -10,8 +11,8 @@ const PHASES = [
   { id: 'assessment', label: 'Đánh giá ghi nhớ' }
 ];
 
-const ReviewSession = ({ cards, onAssessment, onComplete }) => {
-  const [phaseIndex, setPhaseIndex] = useState(0);
+const ReviewSession = ({ cards, onAssessment, onComplete, skipPreview }) => {
+  const [phaseIndex, setPhaseIndex] = useState(skipPreview ? 1 : 0);
   const [currentQueue, setCurrentQueue] = useState([...cards]);
   const [totalInPhase, setTotalInPhase] = useState(cards.length);
   const [wrongCounts, setWrongCounts] = useState({}); // { id: count }
@@ -305,9 +306,20 @@ const ReviewSession = ({ cards, onAssessment, onComplete }) => {
                 <span className="text-xs font-black text-slate-400 uppercase tracking-widest mb-4 block">
                   {currentPhase.id === 'guess-meaning' ? 'Đoán định nghĩa' : 'Đoán từ vựng'}
                 </span>
-                <h2 className="text-4xl md:text-5xl font-black text-slate-800 dark:text-white tracking-tight">
-                  {currentPhase.id === 'guess-meaning' ? currentCard.word : currentCard.definition}
-                </h2>
+                <div className="flex items-center justify-center gap-4">
+                  <h2 className="text-4xl md:text-5xl font-black text-slate-800 dark:text-white tracking-tight">
+                    {currentPhase.id === 'guess-meaning' ? currentCard.word : currentCard.definition}
+                  </h2>
+                  {currentPhase.id === 'guess-meaning' && (
+                    <button 
+                      onClick={() => speak(currentCard.word)}
+                      className="p-3 rounded-2xl bg-primary/10 text-primary hover:bg-primary/20 transition-all shadow-sm flex items-center justify-center"
+                      title="Nghe phát âm"
+                    >
+                      <Volume2 className="w-8 h-8" />
+                    </button>
+                  )}
+                </div>
               </div>
 
               <div className="w-full relative">

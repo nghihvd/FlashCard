@@ -1,7 +1,14 @@
 import React from 'react';
 import { motion } from 'framer-motion';
+import { Volume2 } from 'lucide-react';
+import { speak } from '../utils/speech';
 
 const Card3D = ({ front, back, isFlipped, onFlip }) => {
+  const handleSpeak = (e) => {
+    e.stopPropagation();
+    speak(front.word);
+  };
+
   return (
     <div 
       className={`flip-card w-full max-w-lg aspect-[4/5] cursor-pointer ${isFlipped ? 'flipped' : ''}`}
@@ -15,6 +22,15 @@ const Card3D = ({ front, back, isFlipped, onFlip }) => {
               {front.pos || 'Word'}
             </span>
           </div>
+
+          <button 
+            onClick={handleSpeak}
+            className="absolute top-8 right-8 p-3 rounded-2xl bg-primary/5 text-primary hover:bg-primary/20 transition-all hover:scale-110 active:scale-95 z-10"
+            title="Nghe phát âm"
+          >
+            <Volume2 className="w-6 h-6" />
+          </button>
+
           <h2 className="text-4xl md:text-5xl font-extrabold text-slate-900 tracking-tight">
             {front.word}
           </h2>
